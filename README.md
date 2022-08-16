@@ -27,11 +27,14 @@ Check:
 docker-compose --version
 mkdir helloTeste
 
-- Cluster 
+- Cluster:
+ 
 git clone http://github.com/rodrigo-reboucas/docker-bigdata.git.spark
 
-- Imagens 
+- Imagens:
+ 
 docker-compose-fdocker-compose-completo.yml pull
 
-- Iniciar Cluster Big Data 
+- Iniciar Cluster Big Data:
+ 
 docker-compose -f docker-compose-parcial.yml up -d
