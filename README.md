@@ -3,7 +3,8 @@ Projeto final do curso de Engenharia de Dados – Semantix.
 Os dados utilizados neste projeto foram coletado no site: https://covid.saude.gov.br/
 
 
-################################################# INSTALAÇÃO DOCKER E DOCKER-COMPOSE ######################################################################
+INSTALAÇÃO DOCKER E DOCKER-COMPOSE 
+
 #Docker:
 sudo apt update
 sudo apt upgrade
@@ -26,11 +27,11 @@ Check:
 docker-compose --version
 mkdir helloTeste
 
-################################################## Cluster ##############################################################################################
+- Cluster 
 git clone http://github.com/rodrigo-reboucas/docker-bigdata.git.spark
 
-################################################ Imagens ################################################################################################
+- Imagens 
 docker-compose-fdocker-compose-completo.yml pull
 
-#################################################### Iniciar Cluster Big Data ###########################################################################
+- Iniciar Cluster Big Data 
 docker-compose -f docker-compose-parcial.yml up -d
