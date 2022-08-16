@@ -1,0 +1,59 @@
+1- Iniciar o cluster de big data:
+docker-compose -f docker-compose-parcial.yml start
+
+2- Acessar container do namenode:
+docker exec -it namenode bash
+
+3- Criar diretório no hdfs e importar os arquivos:
+hdfs dfs -mkdir /user/milena/covid
+
+4- Importar os dados para dentro do diretório criado:
+hdfs dfs -put /input/dados1.csv /user/milena/covid
+
+5- Verificar se os dados foram importados corretamente para dentro do diretório:
+hdfs dfs -ls /user/milena/covid
+
+6- Acessar o Hive:
+docker exec -it hive-server bash
+beeline -u jdbc:hive2://localhost:10000
+
+7- Listar banco de dados:
+show databases;
+use milena;
+
+8- Criar tabela dentro de um banco de dados no hive:
+create table dados (
+. . . . . . . . . . . . . . . .> regiao string, estado string, data date, pop int, casosa int, casosn int, obitosa int, obitosn int, recup varchar(10), acomp varchar(10), municipio string)
+. . . . . . . . . . . . . . . .> row format delimited
+. . . . . . . . . . . . . . . .> fields terminated by ','
+. . . . . . . . . . . . . . . .> lines terminated by '\n'
+. . . . . . . . . . . . . . . .> stored as textfile
+. . . . . . . . . . . . . . . .> tblproperties("skip.header.line.count"="1");
+
+9- Importar os arquivos para dentro da tabela:
+load data inpath '/user/milena/covid/dados1.csv' overwrite into table dados;
+load data inpath '/user/milena/covid/dados2.csv' overwrite into table dados;
+load data inpath '/user/milena/covid/dados3.csv' overwrite into table dados;
+load data inpath '/user/milena/covid/dados4.csv' overwrite into table dados;
+load data inpath '/user/milena/covid/dados5.csv' overwrite into table dados;
+
+10- Verificar quantidade de registros da tabela:
+select count(*) as qtd_registros from dados;
+
+11- Criar uma tabela particionada por municipio (tabela dinâmica):
+create table par_dados(
+. . . . . . . . . . . . . . . .> regiao string, estado string, data date, semanaEp int, populacao int, casosa int, casosn int, obitosa varchar(10), obitosn varchar(10), recup varchar(10), acomp varchar(10))
+. . . . . . . . . . . . . . . .> partitioned by (municipio string)
+. . . . . . . . . . . . . . . .> row format delimited
+. . . . . . . . . . . . . . . .> fields terminated by ','
+. . . . . . . . . . . . . . . .> lines terminated by '\n'
+. . . . . . . . . . . . . . . .> tblproperties("skip.header.line.count"="1");
+
+12- Habilitar leitura de particionamento dinâmico:
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+13- Inserir partição por municipio:
+insert overwrite table part_dados_covid partition (municipio) select regiao, estado, data, casos, municipio from dados_covid where municipio="Descoberto";
+
+14- Para deletar a consulta de partição:
+alter table dados_p drop partition(municipio='Descoberto');
